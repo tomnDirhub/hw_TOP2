@@ -1,0 +1,220 @@
+#include <iostream>
+#include <fstream>
+#include <windows.h>
+#include <time.h>
+#include <string>
+#include <string.h>
+#include <cstring>
+#include <stdio.h>
+#include <vector>
+
+using namespace std;
+
+void CreatMass(int** arr, int rows, int col)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		arr[i] = new int[col];
+	}
+}
+void FillMass(int** arr, int rows, int col)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < col; j++)
+		{
+			arr[i][j] = 5 - rand() % 10;
+		}
+	}
+}
+void PrintMass(int** arr, int rows, int col)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < col; j++)
+		{
+			cout << arr[i][j] << "\t";
+		}
+		cout << endl;
+	}
+}
+void DeleteMass(int** arr, int rows, int col)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		delete[]arr[i];
+	}
+}
+
+
+void FindCommonElements(int** arrA, int rowsA, int colsA, int** arrB, int rowsB, int colsB, int** arrC, int rowsC, int colsC) {
+	int size = rowsA * colsA;
+	int* commonElements = new int[size];
+	int commonCount = 0;
+
+	for (int i = 0; i < rowsA; ++i) {
+		for (int j = 0; j < colsA; ++j) {
+			int element = arrA[i][j];
+			bool isInB = false, isInC = false;
+
+			for (int k = 0; k < rowsB; ++k) {
+				for (int l = 0; l < colsB; ++l) {
+					if (element == arrB[k][l]) {
+						isInB = true;
+						break;
+					}
+				}
+				if (isInB) break;
+			}
+
+			for (int m = 0; m < rowsC; ++m) {
+				for (int n = 0; n < colsC; ++n) {
+					if (element == arrC[m][n]) {
+						isInC = true;
+						break;
+					}
+				}
+				if (isInC) break;
+			}
+
+			if (isInB && isInC) {
+				bool alreadyAdded = false;
+				for (int p = 0; p < commonCount; ++p) {
+					if (commonElements[p] == element) {
+						alreadyAdded = true;
+						break;
+					}
+				}
+				if (!alreadyAdded) {
+					commonElements[commonCount++] = element;
+				}
+			}
+		}
+	}
+
+	cout << "Общие элементы для массивов A, B, C:\n";
+	for (int i = 0; i < commonCount; ++i) {
+		cout << commonElements[i] << " ";
+	}
+	cout << endl;
+
+	delete[] commonElements;
+}
+
+bool isUnique(int* array, int length, int value) {
+	for (int i = 0; i < length; ++i) {
+		if (array[i] == value) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void AddUniqueValues(int** arr, int rows, int col, int*& uniqueValues, int& uniqueCount) {
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < col; ++j) {
+			if (isUnique(uniqueValues, uniqueCount, arr[i][j])) {
+				uniqueValues[uniqueCount++] = arr[i][j];
+			}
+		}
+	}
+}
+
+void FindCommonElementsAC(int** arr_A, int rows_A, int col_A, int** arr_C, int rows_C, int col_C) {
+	int* commonValues = new int[rows_A * col_A];
+	int count = 0;
+
+	for (int i = 0; i < rows_A; i++) {
+		for (int j = 0; j < col_A; j++) {
+			int currentValue = arr_A[i][j];
+			for (int m = 0; m < rows_C; m++) {
+				for (int n = 0; n < col_C; n++) {
+					if (currentValue == arr_C[m][n]) {
+						bool isDuplicate = false;
+						for (int k = 0; k < count; k++) {
+							if (commonValues[k] == currentValue) {
+								isDuplicate = true;
+								break;
+							}
+						}
+						if (!isDuplicate) {
+							commonValues[count++] = currentValue;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	cout << "Общие элементы массивов A и C:\n";
+	for (int i = 0; i < count; i++) {
+		cout << commonValues[i] << " ";
+	}
+	cout << endl;
+
+	delete[] commonValues;
+}
+
+int main()
+{
+	SetConsoleOutputCP(1251);
+	SetConsoleCP(1251);
+	setlocale(LC_ALL, "RU");
+	srand(time(NULL));
+	cout << "Введите количество строк в массиве \"A\": ";
+	int str_A;
+	cin >> str_A;
+	cout << "Введите количество столбцов в массиве \"A\": ";
+	int cols_A;
+	cin >> cols_A;
+	int** arr_A = new int* [str_A];
+	CreatMass(arr_A, str_A, cols_A);
+	FillMass(arr_A, str_A, cols_A);
+	PrintMass(arr_A, str_A, cols_A);
+
+	cout << "Введите количество строк в массиве \"B\": ";
+	int str_B;
+	cin >> str_B;
+	cout << "Введите количество столбцов в массиве \"B\": ";
+	int cols_B;
+	cin >> cols_B;
+	int** arr_B = new int* [str_B];
+	CreatMass(arr_B, str_B, cols_B);
+	FillMass(arr_B, str_B, cols_B);
+	PrintMass(arr_B, str_B, cols_B);
+
+	cout << "Введите количество строк в массиве \"C\": ";
+	int str_C;
+	cin >> str_C;
+	cout << "Введите количество столбцов в массиве \"C\": ";
+	int cols_C;
+	cin >> cols_C;
+	int** arr_C = new int* [str_C];
+	CreatMass(arr_C, str_C, cols_C);
+	FillMass(arr_C, str_C, cols_C);
+	PrintMass(arr_C, str_C, cols_C);
+
+	FindCommonElements(arr_A, str_A, cols_A, arr_B, str_B, cols_B, arr_C, str_C, cols_C);
+
+	int maxSize = str_A * cols_A + str_B * cols_B + str_C * cols_C;
+	int* uniqueValues = new int[maxSize];
+	int uniqueCount = 0;
+
+	AddUniqueValues(arr_A, str_A, cols_A, uniqueValues, uniqueCount);
+	AddUniqueValues(arr_B, str_B, cols_B, uniqueValues, uniqueCount);
+	AddUniqueValues(arr_C, str_C, cols_C, uniqueValues, uniqueCount);
+
+	cout << "Уникальные значения из массивов A, B, C:" << endl;
+	for (int i = 0; i < uniqueCount; ++i) {
+		cout << uniqueValues[i] << " ";
+	}
+	cout << endl;
+
+	FindCommonElementsAC(arr_A, str_A, cols_A, arr_C, str_C, cols_C);
+
+	DeleteMass(arr_A, str_A, cols_A);
+	DeleteMass(arr_B, str_B, cols_B);
+	DeleteMass(arr_C, str_C, cols_C);
+	delete[]arr_A;
+	return 0;
+}
